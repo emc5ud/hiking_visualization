@@ -7,4 +7,4 @@ So far, this project was done entirely using software and data available online 
 
 ## Motivation
 
-I love to hike and have been thinking about producing an app or website for fun which can display a 3D picture of the hikes I go on. As a first step to completing this project, I decided to try to map a single hike as a first step. This gave me a great excuse to go on one of my favorite hikes: Old Rag Mountain in Shenandoah naitonal park. Although I had the misfortune of experiencing labor day crowds, the hike was still worth it and I ended up with a pretty cool visual. 
+I love to hike and have been thinking about producing an app or website for fun which can display a 3D picture of the hikes I go on. As a first step to completing this project, I decided to try to map a single hike to learn the tools of the trade. This gave me a great excuse to go on one of my favorite hikes: Old Rag Mountain in Shenandoah naitonal park. Although I had the misfortune of experiencing labor day crowds, the hike was still worth it and I ended up with a pretty cool visual. 
