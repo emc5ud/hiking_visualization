@@ -1,3 +1,5 @@
+[link to visual](https://emc5ud.github.io/hiking_visualization/)
+
 # hiking_visualization
 This project was meant to be a soft introduction to the world of GIS. This project displays real gps data I gathered in Shenandoah national park onto a 3D model of the mountain I hiked. From this project I learned about various file formats, such as [LAS files](http://desktop.arcgis.com/en/arcmap/10.3/manage-data/las-dataset/what-is-a-las-dataset-.htm) used to store Lidar point data, gpx files meant to store gps data, and .vrt files which can store digital elevation data. 
 
