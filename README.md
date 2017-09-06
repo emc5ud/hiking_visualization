@@ -18,8 +18,10 @@ In case anyone is curious, I wanted to list a step by step methodology to produc
 ### Getting the data
 **DEM**
 For my project I used [USGS Earth Explorer](https://earthexplorer.usgs.gov/) to find the appropriate digital elevation data set. On their website, simply zoom to the area of interest, and select the data format you are interested in. Lidar data is an option if you want a very precise 3d model, but this proved to be more effort than it was worth in my experience. My dataset had a resolution of 1 arc second and turned out alright. 
+
 **GPX**
 Using a gpslogger logger app of choice, you can create a gpx file containing your trail path. Then, I followed [these steps](http://docs.qgis.org/2.0/en/docs/user_manual/working_with_gps/plugins_gps.html) to convert the gpx file to a .shp file. 
+
 **Satellite Images**
 Simply install the openlayers plugin to qgis, and then go to web->OpenLayers Plugin to select the database of your fancy. 
 
