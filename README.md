@@ -8,3 +8,11 @@ So far, this project was done entirely using software and data available online 
 ## Motivation
 
 I love to hike and have been thinking about producing an app or website for fun which can display a 3D picture of the hikes I go on. As a first step to completing this project, I decided to try to map a single hike to learn the tools of the trade. This gave me a great excuse to go on one of my favorite hikes: Old Rag Mountain in Shenandoah naitonal park. Although I had the misfortune of experiencing labor day crowds, the hike was still worth it and I ended up with a pretty cool visual. 
+
+## Method
+
+In case anyone is curious, I wanted to list a step by step methodology to produce a result like mine. 
+
+### Getting the data
+For my project I used [USGS Earth Explorer](https://earthexplorer.usgs.gov/) to find the appropriate digital elevation data set. On their website, simply zoom to the area of interest, and select the data format you are interested in. Lidar data is an option if you want a very precise 3d model, but this proved to be more effort than it was worth in my experience. My dataset had a resolution of 1 arc second and turned out alright. 
+
