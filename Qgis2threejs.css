@@ -1,12 +1,20 @@
 body {
   margin: 0;
   overflow: hidden;
+font: bold 1em 'Lucida Grande', sans-serif;
+}
+
+
+
+#window {
+    background: black;
+/*    height:800px;*/
 }
 
 #webgl {
   /* sky-like */
   background: linear-gradient(to bottom, #98c8f6 0%,#cbebff 40%,#f0f9ff 100%);
-}
+  }
 
 #footer {
   position: absolute;
@@ -213,4 +221,30 @@ table.attrs tr td:first-child {
   /* these 2 properties are copied to canvas 2D context in renderLabels function of Qgis2threejs.js */
   color: black;
   font: normal medium sans-serif;
+}
+
+
+
+path { 
+/*    stroke: steelblue;*/
+    stroke-width: 2;
+    fill: none;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: grey;
+    stroke-width: 3;
+    shape-rendering: crispEdges;
+}
+
+.line {
+    fill: none;
+    stroke: url(#line-gradient);
+    stroke-width: 1px;
+}
+.area {
+    fill: url(#line-gradient);
+/*    stroke-width: 0;*/
 }
