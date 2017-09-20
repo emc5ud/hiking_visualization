@@ -7,6 +7,7 @@
 <link rel="stylesheet" type="text/css" href="./Qgis2threejs.css">
 </head>
 <body>
+<div id="window"></div>
 <div id="webgl"></div>
 
 <!-- popup -->
@@ -49,22 +50,190 @@ var option = Q3D.Options;
 if (typeof proj4 !== "undefined") document.getElementById("lib_proj4js").style.display = "list-item";
 
 var container = document.getElementById("webgl");
+
 // initialize application
 var app = Q3D.application;
 app.init(container);
-
-// load the project
+//// load the project
 app.loadProject(project);
-
+//
 app.addEventListeners();
 app.start();
-
 </script>
 <script src="./dat-gui/dat.gui.min.js"></script>
 <script src="./dat-gui_panel.js"></script>
 <script>
 // initialize dat-gui panel
 Q3D.gui.init();
+</script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="./js/rainbowvis.js"></script>
+<script>
+// Set the dimensions of the canvas / graph
+var margin = {top: 20, right: 400, bottom: 40, left: 80},
+    width = 1400 - margin.left - margin.right,
+    height = 150 - margin.top - margin.bottom;
+    
+// Define the line
+var valueline = d3.svg.line()
+    .x(function(d) { return x(d.distance); })
+    .y(function(d) { return y(d.elev); });
+  
+// Adds the svg canvas
+var svg = d3.select("body")
+    .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        //.attr("width", '80%')
+        .attr("height", height + margin.top + margin.bottom)
+        //.attr("height", auto)
+    .append("g")
+        .attr("transform", 
+              "translate(" + (margin.left) + "," + (margin.top) + ")");
+
+// Set the ranges
+var x = d3.scale.linear().range([0, width]);
+var y = d3.scale.linear().range([height, 0]);
+
+// Define the axes
+var xAxis = d3.svg.axis().scale(x)
+    .orient("bottom")//.ticks(8)
+    .tickFormat(d => d/1000 + '');
+
+var yAxis = d3.svg.axis().scale(y)
+    .orient("left").tickValues([0,320,640,960]);
+var area = d3.svg.area()
+    .x(function(d) { return x(d.distance); })
+    .y0(height)
+    .y1(function(d) { return y(d.elev); });    
+    
+    
+// Get the data
+d3.csv("old_rag_data.csv", function(error, data) {
+    data.forEach(function(d) {
+        d.distance = +d.distance;
+        d.slope = +d.slope;
+        d.elev = +d.elev;
+    });
+
+    // Scale the range of the data
+    x.domain(d3.extent(data, function(d) { return d.distance; }));
+    y.domain([0, d3.max(data, function(d) { return d.elev; })]);
+    var maxSlope = 0;
+    var minSlope = 100;
+    var maxX = data.slice(-1)[0].distance;
+    var maxH = 0;
+    data.forEach(function(d){
+        if (d.elev > maxH){
+            maxH = d.elev;
+        }           
+        if(Math.abs(d.slope)>maxSlope){
+            maxSlope = Math.abs(d.slope);
+        }
+        if(Math.abs(d.slope)<minSlope){
+            minSlope = Math.abs(d.slope);
+        }
+    })
+    
+    svg.append("linearGradient")				
+        .attr("id", "line-gradient")			
+        .attr("gradientUnits", "userSpaceOnUse")	
+        .attr("x1", x(0)).attr("y1", "0%")			
+        .attr("x2", x(maxX)).attr("y2", "0%")		
+    .selectAll("stop")						
+        .data(function(d){
+            var rainbow = new Rainbow();
+            var colorDiv = 160;
+            rainbow.setNumberRange(1, colorDiv+1);
+            //rainbow.setSpectrum('#f6eff7', '#bdc9e1','#67a9cf','#1c9099','#016c59');
+//            rainbow.setSpectrum('blue', 'lightblue', 'green', 'yellow', 'orange','red');
+            rainbow.setSpectrum('green','yellow','orange','red')
+            var grad = []
+            for(var i =0; i < data.length-1; i++){
+                percent = data[i].distance/maxX*100
+                nextpercent = data[i+1].distance/maxX*100
+                //colpos = Math.round(data[i].elev/maxH*colorDiv)
+                colpos = Math.round((Math.abs(data[i].slope)-minSlope)/(maxSlope-minSlope)*colorDiv)
+                col = rainbow.colourAt(colpos)
+                grad.push({offset: ""+percent+"%", color: '#' + col})
+                grad.push({offset: ""+nextpercent+"%", color: '#' + col})
+
+            }
+            return grad})
+    .enter().append("stop")			
+        .attr("offset", function(d) { return d.offset; })	
+        .attr("stop-color", function(d) { return d.color; });
+    
+//     Add the valueline path.
+    svg.append("path")
+        .attr("class", "line")
+        .attr("d", valueline(data));
+//     Add Area under line
+    svg.append("path")
+        .datum(data)
+        .attr("class", "area")
+        .attr("d", area);
+//    // Add the X Axis
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+     svg.append("text")             
+      .attr("transform",
+            "translate(" + (width/2) + " ," + 
+                           (height + margin.top + 15) + ")")
+      .style("text-anchor", "middle")
+      .text("Distance (km)");
+    // Add the Y Axis
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis);
+      // text label for the y axis
+  svg.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0 - margin.left+10)
+      .attr("x",0 - (height / 2))
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .text("Elevation (m)");
+
+    var legend = svg.append('rect')
+      .attr("transform",
+            "translate(" + width*1.06 + " ," + 
+                           0 + ")")
+      .attr('width', 20)
+      .attr('height', 100)
+      .attr('fill','url(#legend-gradient)')
+svg.append("linearGradient")				
+        .attr("id", "legend-gradient")			
+        .attr("gradientUnits", "userSpaceOnUse")	
+        .attr("x1", '0%').attr("y1", '65%')			
+        .attr("x2", '0%').attr("y2", '0%')		
+    .selectAll("stop")						
+        .data(function(d){
+            var rainbow = new Rainbow();
+            var colorDiv = 100;
+            rainbow.setNumberRange(1, colorDiv+1);
+            rainbow.setSpectrum('green','yellow','orange','red')
+            var grad = []
+            for(var i =0; i < 100; i++){
+                col = rainbow.colourAt(i)
+                grad.push({offset: ""+i+"%", color: '#' + col})
+                grad.push({offset: ""+(i+1)+"%", color: '#' + col})
+
+            }
+            return grad})
+    .enter().append("stop")			
+        .attr("offset", function(d) { return d.offset; })	
+        .attr("stop-color", function(d) { return d.color; });
+
+    var legendy = d3.scale.linear().range([100, 0]).domain([0, .301]);
+    var yAxis2 = d3.svg.axis().scale(legendy).orient("right").ticks(4).tickFormat(d => d*100 + '');
+    svg.append("g").attr("class", "y axis").attr("transform", "translate("+ width*1.10+",0)").call(yAxis2).append("text").attr("transform", "rotate(-90)").attr("transform",
+            "translate(" + 10 + " ," + 
+                           110 + ")")
+        .attr("dy", ".71em").style("text-anchor", "end").text("grade (%)");
+
+});
 </script>
 </body>
 </html>

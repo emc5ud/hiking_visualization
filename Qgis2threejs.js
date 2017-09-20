@@ -145,7 +145,8 @@ limitations:
     if ("popup" in app.urlParams) {
       // open popup window
       var c = window.location.href.split("?");
-      window.open(c[0] + "?" + c[1].replace(/&?popup/, ""), "popup", "width=" + app.urlParams.width + ",height=" + app.urlParams.height);
+      window.open(c[0] + "?" + c[1].replace(/&?popup/, ""), "popup", "width=" + app.urlParams.width + ",height=" + 
+                  app.urlParams.height);
       app.popup.show("Another window has been opened.");
       return;
     }
@@ -158,11 +159,11 @@ limitations:
 
     if (container.clientWidth && container.clientHeight) {
       app.width = container.clientWidth;
-      app.height = container.clientHeight;
+      app.height = container.clientHeight*.72;
       app._fullWindow = false;
     } else {
       app.width = window.innerWidth;
-      app.height = window.innerHeight;
+      app.height = window.innerHeight*.72;
       app._fullWindow = true;
     }
 
@@ -307,7 +308,7 @@ limitations:
     },
 
     resize: function () {
-      if (app._fullWindow) app.setCanvasSize(window.innerWidth, window.innerHeight);
+      if (app._fullWindow) app.setCanvasSize(window.innerWidth, window.innerHeight*.72);
     }
 
   };
